@@ -1,0 +1,13 @@
+#! /bin/sh
+#
+# run-polaris
+# Copyright (C) 2018 Óscar García Amor <ogarcia@connectical.com>
+#
+# Distributed under terms of the GNU GPLv3 license.
+#
+
+POLARIS_ARGS="-w /usr/share/polaris/web -p ${POLARIS_PORT:-5050}"
+[ -n "${POLARIS_CONFIG}" ] && POLARIS_ARGS="${POLARIS_ARGS} -c ${POLARIS_CONFIG}"
+[ -n "${POLARIS_DB}" ] && POLARIS_ARGS="${POLARIS_ARGS} -d ${POLARIS_DB}"
+
+polaris ${POLARIS_ARGS} -f
