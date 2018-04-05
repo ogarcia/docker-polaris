@@ -47,7 +47,7 @@ You can exec the following to mount your music dir and store data.
 
 ```sh
 docker run -d \
-  --name=grafana \
+  --name=polaris \
   -p 5050:5050 \
   -v /my/music/directory:/music \
   -v /my/polaris/data:/var/lib/polaris \
@@ -78,7 +78,7 @@ If you can run a shell instead `run-polaris` command, simply do.
 
 ```sh
 docker run -t -i --rm \
-  --name=grafana \
+  --name=polaris \
   -p 5050:5050 \
   -v /my/music/directory:/music \
   -v /my/polaris/data:/var/lib/polaris \
