@@ -11,12 +11,12 @@ your music collection from any computer or mobile device.
 This docker packages **Polaris** under [Alpine Linux][2], a lightweight
 Linux distribution.
 
-Visit [Docker Hub][3] to see all available tags.
+Visit [Docker Hub][3] or [Quay][4] to see all available tags.
 
 [1]: https://github.com/agersant/polaris
 [2]: https://alpinelinux.org/
 [3]: https://hub.docker.com/r/ogarcia/polaris/
-
+[4]: https://quay.io/repository/ogarcia/polaris
 
 ## Run
 
