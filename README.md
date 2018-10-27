@@ -23,7 +23,7 @@ Visit [Docker Hub][3] or [Quay][4] to see all available tags.
 To run this container, simply exec.
 
 ```sh
-docker run -d \
+docker run -t -d \
   --name=polaris \
   -p 5050:5050 \
   ogarcia/polaris
@@ -46,7 +46,7 @@ This container exports two volumes.
 You can exec the following to mount your music dir and store data.
 
 ```sh
-docker run -d \
+docker run -t -d \
   --name=polaris \
   -p 5050:5050 \
   -v /my/music/directory:/music \

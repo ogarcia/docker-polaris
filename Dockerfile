@@ -1,8 +1,8 @@
-FROM alpine:3.7
+FROM alpine:3.8
 
 COPY scripts /tmp/scripts
 
-ADD https://github.com/agersant/polaris/releases/download/v0.7.1/polaris-0.7.1.tar.gz /tmp/build/polaris.tar.gz
+ADD https://github.com/agersant/polaris/releases/download/v0.8.0/polaris-0.8.0.tar.gz /tmp/build/polaris.tar.gz
 
 RUN /tmp/scripts/build.sh
 

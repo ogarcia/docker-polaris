@@ -6,7 +6,7 @@ docker-image:
 	docker build -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) .
 
 docker-image-test: docker-image
-	docker run -d -p 5050:5050 --name=polaris $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE)
+	docker run -t -d -p 5050:5050 --name=polaris $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE)
 	sleep 4
 	curl -v 127.0.0.1:5050
 	docker stop polaris

@@ -6,6 +6,9 @@
 # Distributed under terms of the GNU GPLv3 license.
 #
 
+# enable edge repository
+sed -i -e 's/v[[:digit:]]\.[[:digit:]]/edge/g' /etc/apk/repositories
+
 # upgrade
 apk -U --no-progress upgrade
 
