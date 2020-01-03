@@ -1,6 +1,6 @@
 # Polaris docker [![Build Status](https://travis-ci.org/ogarcia/docker-polaris.svg?branch=master)](https://travis-ci.org/ogarcia/docker-polaris)
 
-(c) 2018 Óscar García Amor
+(c) 2018-2020 Óscar García Amor
 
 Redistribution, modifications and pull requests are welcomed under the terms
 of GPLv3 license.
@@ -71,6 +71,7 @@ The `run-polaris` command can use the following environment variables.
 | POLARIS_PORT | Define listen port | 5050 |
 | POLARIS_CONFIG | Optional config file location | |
 | POLARIS_DB | Optional database file location | |
+| POLARIS_LOGLEVEL | Optional log level between 0 (off) and 3 (debug) | |
 
 ## Shell run
 

@@ -1,41 +1,42 @@
 #! /bin/sh
 #
 # build.sh
-# Copyright (C) 2018 Óscar García Amor <ogarcia@connectical.com>
+# Copyright (C) 2018-2020 Óscar García Amor <ogarcia@connectical.com>
 #
 # Distributed under terms of the GNU GPLv3 license.
 #
-
-# enable edge repository
-sed -i -e 's/v[[:digit:]]\.[[:digit:]]/edge/g' /etc/apk/repositories
 
 # upgrade
 apk -U --no-progress upgrade
 
 # install build deps
-apk --no-progress add cargo libgcc make openssl openssl-dev rust
+apk --no-progress add build-base curl openssl openssl-dev sqlite-dev
+curl https://sh.rustup.rs -sSf | sh -s -- -q -y --default-toolchain nightly
 
 # extract software
-cd /tmp/build
+cd /polaris/src
 tar xzf polaris.tar.gz
 
 # build polaris
-cargo build --release
+cd /polaris/src/polaris
+source $HOME/.cargo/env
+RUSTFLAGS="-C target-feature=-crt-static" cargo build --release
 
 # install polaris
-install -D -m755 /tmp/scripts/run-polaris \
-  /usr/bin/run-polaris
-install -D -m755 /tmp/build/target/release/polaris \
-  /usr/bin/polaris
-install -d /usr/share/polaris
-cp -r web /usr/share/polaris
+install -D -m0755 "/polaris/scripts/run-polaris" \
+  "/polaris/pkg/bin/run-polaris"
+install -D -m0755 "/polaris/src/polaris/target/release/polaris" \
+  "/polaris/pkg/bin/polaris"
+install -d -m0755 "/polaris/pkg/usr/share/polaris"
+cp -r "web" "/polaris/pkg/usr/share/polaris"
+cp -r "swagger" "/polaris/pkg/usr/share/polaris"
+find "/polaris/pkg/usr/share/polaris" -type f -exec chmod -x {} \;
+install -d -m0755 -o100 -g100 "/polaris/pkg/var/lib/polaris"
 
 # create polaris user
 adduser -S -D -H -h /var/lib/polaris -s /sbin/nologin -G users \
   -g polaris polaris
-mkdir -p /var/lib/polaris
-chown polaris:users /var/lib/polaris
-
-# remove build deps
-apk --no-progress del cargo make openssl-dev rust
-rm -rf /root/.ash_history /root/.cargo /tmp/* /var/cache/apk/*
+install -d -m0755 "/polaris/pkg/etc"
+install -m644 "/etc/passwd" "/polaris/pkg/etc/passwd"
+install -m644 "/etc/group" "/polaris/pkg/etc/group"
+install -m640 -gshadow "/etc/shadow" "/polaris/pkg/etc/shadow"

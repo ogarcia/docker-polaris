@@ -1,13 +1,16 @@
 #! /bin/sh
 #
 # run-polaris
-# Copyright (C) 2018 Óscar García Amor <ogarcia@connectical.com>
+# Copyright (C) 2018-2020 Óscar García Amor <ogarcia@connectical.com>
 #
 # Distributed under terms of the GNU GPLv3 license.
 #
 
-POLARIS_ARGS="-w /usr/share/polaris/web -p ${POLARIS_PORT:-5050}"
+POLARIS_ARGS="-w /usr/share/polaris/web"
+POLARIS_ARGS="${POLARIS_ARGS} -s /usr/share/polaris/swagger"
+POLARIS_ARGS="${POLARIS_ARGS} -p ${POLARIS_PORT:-5050}"
 [ -n "${POLARIS_CONFIG}" ] && POLARIS_ARGS="${POLARIS_ARGS} -c ${POLARIS_CONFIG}"
 [ -n "${POLARIS_DB}" ] && POLARIS_ARGS="${POLARIS_ARGS} -d ${POLARIS_DB}"
+[ -n "${POLARIS_LOGLEVEL}" ] && POLARIS_ARGS="${POLARIS_ARGS} -l ${POLARIS_LOGLEVEL}"
 
 polaris ${POLARIS_ARGS} -f
