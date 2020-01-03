@@ -6,7 +6,7 @@ RUN /polaris/scripts/build.sh
 FROM alpine:3.11
 RUN apk -U --no-progress upgrade && \
     apk --no-progress add libgcc sqlite-libs && \
-    install -d -m0755 -o100 -g100 "/polaris/pkg/var/lib/polaris"
+    install -d -m0755 -o100 -g100 /var/lib/polaris
 COPY --from=builder /polaris/pkg /
 EXPOSE 5050
 VOLUME [ "/music", "/var/lib/polaris" ]
