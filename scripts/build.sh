@@ -31,7 +31,6 @@ install -d -m0755 "/polaris/pkg/usr/share/polaris"
 cp -r "web" "/polaris/pkg/usr/share/polaris"
 cp -r "swagger" "/polaris/pkg/usr/share/polaris"
 find "/polaris/pkg/usr/share/polaris" -type f -exec chmod -x {} \;
-install -d -m0755 -o100 -g100 "/polaris/pkg/var/lib/polaris"
 
 # create polaris user
 adduser -S -D -H -h /var/lib/polaris -s /sbin/nologin -G users \
