@@ -23,7 +23,7 @@ source $HOME/.cargo/env
 RUSTFLAGS="-C target-feature=-crt-static" cargo build --release
 
 # install polaris
-install -D -m0755 "/polaris/scripts/run-polaris" \
+install -D -m0755 "/polaris/build/run-polaris" \
   "/polaris/pkg/bin/run-polaris"
 install -D -m0755 "/polaris/src/polaris/target/release/polaris" \
   "/polaris/pkg/bin/polaris"

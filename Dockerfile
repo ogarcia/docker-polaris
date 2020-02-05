@@ -1,9 +1,12 @@
-FROM alpine:3.11 AS builder
-COPY scripts /polaris/scripts
-ADD https://github.com/agersant/polaris/releases/download/v0.11.0/polaris-0.11.0.tar.gz /polaris/src/polaris.tar.gz
-RUN /polaris/scripts/build.sh
+ARG ALPINE_VERSION
 
-FROM alpine:3.11
+FROM alpine:${ALPINE_VERSION} AS builder
+ARG POLARIS_VERSION
+COPY .circleci /polaris/build
+ADD https://github.com/agersant/polaris/releases/download/v${POLARIS_VERSION}/polaris-${POLARIS_VERSION}.tar.gz /polaris/src/polaris.tar.gz
+RUN /polaris/build/build.sh
+
+FROM alpine:${ALPINE_VERSION}
 RUN apk -U --no-progress upgrade && \
     apk --no-progress add libgcc sqlite-libs && \
     install -d -m0755 -o100 -g100 /var/lib/polaris

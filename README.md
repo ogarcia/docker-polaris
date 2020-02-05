@@ -1,4 +1,4 @@
-# Polaris docker [![Build Status](https://travis-ci.org/ogarcia/docker-polaris.svg?branch=master)](https://travis-ci.org/ogarcia/docker-polaris)
+# Polaris docker [![CircleCI](https://circleci.com/gh/ogarcia/docker-polaris.svg?style=svg)](https://circleci.com/gh/ogarcia/docker-polaris)
 
 (c) 2018-2020 Óscar García Amor
 
