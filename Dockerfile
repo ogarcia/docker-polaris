@@ -3,7 +3,7 @@ ARG ALPINE_VERSION
 FROM alpine:${ALPINE_VERSION} AS builder
 ARG POLARIS_VERSION
 COPY .circleci /polaris/build
-ADD https://github.com/agersant/polaris/releases/download/v${POLARIS_VERSION}/polaris-${POLARIS_VERSION}.tar.gz /polaris/src/polaris.tar.gz
+ADD https://github.com/agersant/polaris/releases/download/${POLARIS_VERSION}/Polaris_${POLARIS_VERSION}.tar.gz /polaris/src/polaris.tar.gz
 RUN /polaris/build/build.sh
 
 FROM alpine:${ALPINE_VERSION}
