@@ -20,7 +20,13 @@ tar xzf polaris.tar.gz
 # build polaris
 cd /polaris/src/polaris
 source $HOME/.cargo/env
-RUSTFLAGS="-C target-feature=-crt-static" cargo build --release
+POLARIS_WEB_DIR="/usr/share/polaris/web" \
+  POLARIS_SWAGGER_DIR="/usr/share/polaris/swagger" \
+  POLARIS_DB_DIR="/var/lib/polaris" \
+  POLARIS_LOG_DIR="/var/log/polaris" \
+  POLARIS_CACHE_DIR="/var/cache/polaris" \
+  POLARIS_PID_DIR="/tmp/polaris" \
+  RUSTFLAGS="-C target-feature=-crt-static" cargo build --release
 
 # install polaris
 install -D -m0755 "/polaris/build/run-polaris" \

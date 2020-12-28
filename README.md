@@ -37,30 +37,37 @@ stop and rm.
 
 ## Volumes
 
-This container exports two volumes.
+This container exports three volumes.
 
 - /music: for store you music collection
-- /var/lib/polaris: polaris data like database and logs (under
-  `.local/share/polaris`)
+- /var/cache/polaris: polaris cache
+- /var/lib/polaris: polaris data like database
 
-You can exec the following to mount your music dir and store data.
+You can exec the following to mount your music dir, store cache and data.
 
 ```sh
 docker run -t -d \
   --name=polaris \
   -p 5050:5050 \
   -v /my/music/directory:/music \
+  -v /my/polaris/cache:/var/cache/polaris \
   -v /my/polaris/data:/var/lib/polaris \
   ogarcia/polaris
 ```
 
-Take note that you must create before the data directory `/my/polaris/data`
-and set ownership to UID/GID 100, otherwise the main proccess will crash.
+Take note that you must create before the cache directory
+`/my/polaris/cache` and data directory `/my/polaris/data` and set ownership
+to UID/GID 100 in both, otherwise the main proccess will crash.
 
 ```sh
-mkdir -p /my/polaris/data
-chown -R 100:100 /my/polaris/data
+mkdir -p /my/polaris/cache /my/polaris/data
+chown -R 100:100 /my/polaris/cache /my/polaris/data
 ```
+
+**WARNING**: Breaking changes in 0.13.x. The database is stored by default
+in `/var/lib/polaris/db.sqlite`. You must move your database from
+`/my/polaris/data/.local/share/polaris` to `/my/polaris/data`. The cache
+files are stored now in `/var/cache/polaris`.
 
 ## Environment variables
 
@@ -71,7 +78,15 @@ The `run-polaris` command can use the following environment variables.
 | POLARIS_PORT | Define listen port | 5050 |
 | POLARIS_CONFIG | Optional config file location | |
 | POLARIS_DB | Optional database file location | |
+| POLARIS_CACHE_DIR | Optional cache directory location | /var/cache/polaris |
+| POLARIS_PIDFILE | Optional pid file location (see note) | |
+| POLARIS_LOGFILE | Optional log file location (see note) | |
 | POLARIS_LOGLEVEL | Optional log level between 0 (off) and 3 (debug) | |
+| POLARIS_DAEMONIZE | Run polaris as daemon in docker (see note) | false |
+
+Note: both `POLARIS_PIDFILE` and `POLARIS_LOGFILE` only apply if you set
+`POLARIS_DAEMONIZE` as `true`. This only have sense if you want use this
+image as base of your own modified one and you want run anything else.
 
 ## Shell run
 
