@@ -11,7 +11,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker:
-          version: 18.09.3
+          version: 20.10.14
       - run:
           name: Build Docker image
           command: make docker-build
@@ -24,7 +24,7 @@ jobs:
             - ./image.tar
   test:
     machine:
-      image: ubuntu-1604:201903-01
+      image: ubuntu-2204:2022.04.1
     steps:
       - attach_workspace:
           at: /tmp/workspace
@@ -42,7 +42,7 @@ jobs:
           at: /tmp/workspace
       - checkout
       - setup_remote_docker:
-          version: 18.09.3
+          version: 20.10.14
       - run:
           name: Load archived Docker image
           command: DOCKER_IMAGE_FILENAME=/tmp/workspace/image.tar make docker-load
@@ -56,7 +56,7 @@ jobs:
           at: /tmp/workspace
       - checkout
       - setup_remote_docker:
-          version: 18.09.3
+          version: 20.10.14
       - run:
           name: Load archived Docker image
           command: DOCKER_IMAGE_FILENAME=/tmp/workspace/image.tar make docker-load
