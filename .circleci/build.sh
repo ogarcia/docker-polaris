@@ -1,7 +1,7 @@
 #! /bin/sh
 #
 # build.sh
-# Copyright (C) 2018-2020 Óscar García Amor <ogarcia@connectical.com>
+# Copyright (C) 2018-2022 Óscar García Amor <ogarcia@connectical.com>
 #
 # Distributed under terms of the GNU GPLv3 license.
 #
@@ -11,7 +11,7 @@ apk -U --no-progress upgrade
 
 # install build deps
 apk --no-progress add build-base curl openssl openssl-dev sqlite-dev
-curl https://sh.rustup.rs -sSf | sh -s -- -q -y --default-toolchain nightly
+curl https://sh.rustup.rs -sSf | sh -s -- -q -y --default-toolchain stable
 
 # extract software
 cd /polaris/src
