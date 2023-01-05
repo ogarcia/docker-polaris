@@ -1,6 +1,6 @@
 # Polaris docker [![CircleCI](https://circleci.com/gh/ogarcia/docker-polaris.svg?style=svg)](https://circleci.com/gh/ogarcia/docker-polaris)
 
-(c) 2018-2022 Óscar García Amor
+(c) 2018-2023 Óscar García Amor
 
 Redistribution, modifications and pull requests are welcomed under the terms
 of GPLv3 license.
