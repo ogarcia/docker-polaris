@@ -79,6 +79,7 @@ workflows:
             tags:
               only: /.*/
       - publish-dockerhub:
+          context: dockerhub
           requires:
             - test
           filters:
@@ -87,6 +88,7 @@ workflows:
             branches:
               ignore: /.*/
       - publish-quay:
+          context: quay-og
           requires:
             - test
           filters:
