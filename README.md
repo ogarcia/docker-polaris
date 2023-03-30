@@ -90,7 +90,7 @@ image as base of your own modified one and you want run anything else.
 
 ## Shell run
 
-If you can run a shell instead `run-polaris` command, simply do.
+If you want to run a shell instead `run-polaris` command, simply do.
 
 ```sh
 docker run -t -i --rm \
