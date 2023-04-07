@@ -1,10 +1,21 @@
-ALPINE_VERSION := 3.17.1
+ALPINE_VERSION := 3.17.3
 POLARIS_VERSION := 0.14.0
-DOCKER_ORGANIZATION := ogarcia
-DOCKER_IMAGE := polaris
-DOCKER_IMAGE_FILENAME ?= $(DOCKER_ORGANIZATION)_$(DOCKER_IMAGE).tar
+CONTAINER_ORGANIZATION := ogarcia
+CONTAINER_IMAGE := polaris
+CONTAINER_ARCHITECTURES := linux/amd64
+TAGS := -t $(CONTAINER_ORGANIZATION)/$(CONTAINER_IMAGE):master
+TAGS += -t quay.io/$(CONTAINER_ORGANIZATION)/$(CONTAINER_IMAGE):master
+TAGS += -t ghcr.io/$(CONTAINER_ORGANIZATION)/$(CONTAINER_IMAGE):master
+ifdef CIRCLE_TAG
+	TAGS := -t $(CONTAINER_ORGANIZATION)/$(CONTAINER_IMAGE):latest
+	TAGS += -t $(CONTAINER_ORGANIZATION)/$(CONTAINER_IMAGE):${CIRCLE_TAG}
+	TAGS += -t quay.io/$(CONTAINER_ORGANIZATION)/$(CONTAINER_IMAGE):latest
+	TAGS += -t quay.io/$(CONTAINER_ORGANIZATION)/$(CONTAINER_IMAGE):${CIRCLE_TAG}
+	TAGS += -t ghcr.io/$(CONTAINER_ORGANIZATION)/$(CONTAINER_IMAGE):latest
+	TAGS += -t ghcr.io/$(CONTAINER_ORGANIZATION)/$(CONTAINER_IMAGE):${CIRCLE_TAG}
+endif
 
-all: docker-build docker-test
+all: docker-build
 
 check-dockerhub-env:
 ifndef DOCKERHUB_USERNAME
@@ -22,42 +33,25 @@ ifndef QUAY_PASSWORD
 	$(error QUAY_PASSWORD is undefined)
 endif
 
+check-github-registry-env:
+ifndef GITHUB_REGISTRY_USERNAME
+	$(error GITHUB_REGISTRY_USERNAME is undefined)
+endif
+ifndef GITHUB_REGISTRY_PASSWORD
+	$(error GITHUB_REGISTRY_PASSWORD is undefined)
+endif
+
 docker-build:
 	docker build -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) --build-arg ALPINE_VERSION=$(ALPINE_VERSION) --build-arg POLARIS_VERSION=$(POLARIS_VERSION) .
 
-docker-test:
-	docker image inspect $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE)
-	docker run --name $(DOCKER_IMAGE) -d -p 5050:5050 $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE)
-	sleep 5
-	curl -v 127.0.0.1:5050
-	docker kill $(DOCKER_IMAGE)
-	docker rm $(DOCKER_IMAGE)
+docker-buildx:
+	docker buildx build -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) --platform $(CONTAINER_ARCHITECTURES) --build-arg ALPINE_VERSION=$(ALPINE_VERSION) --build-arg POLARIS_VERSION=$(POLARIS_VERSION) .
 
-docker-save:
-	docker image inspect $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) > /dev/null 2>&1
-	docker save -o $(DOCKER_IMAGE_FILENAME) $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE)
-
-docker-load:
-ifneq ($(wildcard $(DOCKER_IMAGE_FILENAME)),)
-	docker load -i $(DOCKER_IMAGE_FILENAME)
-endif
-
-dockerhub-push: check-dockerhub-env
+container-buildx-push: check-dockerhub-env check-quay-env check-github-registry-env
 	echo "${DOCKERHUB_PASSWORD}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
-	docker push $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):latest
-ifdef CIRCLE_TAG
-	docker tag $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):latest $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):${CIRCLE_TAG}
-	docker push $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):${CIRCLE_TAG}
-endif
-
-quay-push: check-quay-env
 	echo "${QUAY_PASSWORD}" | docker login -u "${QUAY_USERNAME}" --password-stdin quay.io
-	docker tag $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):latest quay.io/$(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):latest
-	docker push quay.io/$(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):latest
-ifdef CIRCLE_TAG
-	docker tag $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):latest quay.io/$(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):${CIRCLE_TAG}
-	docker push quay.io/$(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE):${CIRCLE_TAG}
-endif
+	echo "${GITHUB_REGISTRY_PASSWORD}" | docker login -u "${GITHUB_REGISTRY_USERNAME}" --password-stdin ghcr.io
+	docker buildx build $(TAGS) --platform $(CONTAINER_ARCHITECTURES) --build-arg ALPINE_VERSION=$(ALPINE_VERSION) --build-arg POLARIS_VERSION=$(POLARIS_VERSION) --push .
 
-.PHONY: all check-dockerhub-env check-quay-env docker-build docker-test docker-save dockerhub-push quay-push
+.PHONY: all check-dockerhub-env check-quay-env check-github-registry-env container-build container-buildx container-buildx-push
 # vim:ft=make

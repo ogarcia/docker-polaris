@@ -28,6 +28,9 @@ POLARIS_WEB_DIR="/usr/share/polaris/web" \
   POLARIS_PID_DIR="/tmp/polaris" \
   RUSTFLAGS="-C target-feature=-crt-static" cargo build --release
 
+# test binary
+/polaris/src/polaris/target/release/polaris --help
+
 # install polaris
 install -D -m0755 "/polaris/build/run-polaris" \
   "/polaris/pkg/bin/run-polaris"

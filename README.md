@@ -1,4 +1,4 @@
-# Polaris docker [![CircleCI](https://circleci.com/gh/ogarcia/docker-polaris.svg?style=svg)](https://circleci.com/gh/ogarcia/docker-polaris)
+# Polaris container [![CircleCI](https://circleci.com/gh/ogarcia/docker-polaris.svg?style=svg)](https://circleci.com/gh/ogarcia/docker-polaris)
 
 (c) 2018-2023 Óscar García Amor
 
@@ -8,15 +8,16 @@ of GPLv3 license.
 [Polaris][1] is a music streaming application, designed to let you enjoy
 your music collection from any computer or mobile device.
 
-This docker packages **Polaris** under [Alpine Linux][2], a lightweight
+This container packages **Polaris** under [Alpine Linux][2], a lightweight
 Linux distribution.
 
-Visit [Docker Hub][3] or [Quay][4] to see all available tags.
+Visit [Docker Hub][3], [Quay][4] or [GitHub][5] to see all available tags.
 
 [1]: https://github.com/agersant/polaris
 [2]: https://alpinelinux.org/
 [3]: https://hub.docker.com/r/ogarcia/polaris/
 [4]: https://quay.io/repository/ogarcia/polaris
+[5]: https://github.com/users/ogarcia/packages/container/package/polaris
 
 ## Run
 
@@ -82,7 +83,7 @@ The `run-polaris` command can use the following environment variables.
 | POLARIS_PIDFILE | Optional pid file location (see note) | |
 | POLARIS_LOGFILE | Optional log file location (see note) | |
 | POLARIS_LOGLEVEL | Optional log level between 0 (off) and 3 (debug) | |
-| POLARIS_DAEMONIZE | Run polaris as daemon in docker (see note) | false |
+| POLARIS_DAEMONIZE | Run polaris as daemon in container (see note) | false |
 
 Note: both `POLARIS_PIDFILE` and `POLARIS_LOGFILE` only apply if you set
 `POLARIS_DAEMONIZE` as `true`. This only have sense if you want use this
@@ -90,7 +91,7 @@ image as base of your own modified one and you want run anything else.
 
 ## Shell run
 
-If you can run a shell instead `run-polaris` command, simply do.
+If you want to run a shell instead `run-polaris` command, simply do.
 
 ```sh
 docker run -t -i --rm \
@@ -102,4 +103,4 @@ docker run -t -i --rm \
   ogarcia/polaris
 ```
 
-Please note that the `--rm` modifier destroy the docker after shell exit.
+Please note that the `--rm` modifier destroy the container after shell exit.
