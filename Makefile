@@ -41,11 +41,11 @@ ifndef GITHUB_REGISTRY_PASSWORD
 	$(error GITHUB_REGISTRY_PASSWORD is undefined)
 endif
 
-docker-build:
-	docker build -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) --build-arg ALPINE_VERSION=$(ALPINE_VERSION) --build-arg POLARIS_VERSION=$(POLARIS_VERSION) .
+container-build:
+	docker build -t $(CONTAINER_ORGANIZATION)/$(CONTAINER_IMAGE) --build-arg ALPINE_VERSION=$(ALPINE_VERSION) --build-arg POLARIS_VERSION=$(POLARIS_VERSION) .
 
-docker-buildx:
-	docker buildx build -t $(DOCKER_ORGANIZATION)/$(DOCKER_IMAGE) --platform $(CONTAINER_ARCHITECTURES) --build-arg ALPINE_VERSION=$(ALPINE_VERSION) --build-arg POLARIS_VERSION=$(POLARIS_VERSION) .
+container-buildx:
+	docker buildx build -t $(CONTAINER_ORGANIZATION)/$(CONTAINER_IMAGE) --platform $(CONTAINER_ARCHITECTURES) --build-arg ALPINE_VERSION=$(ALPINE_VERSION) --build-arg POLARIS_VERSION=$(POLARIS_VERSION) .
 
 container-buildx-push: check-dockerhub-env check-quay-env check-github-registry-env
 	echo "${DOCKERHUB_PASSWORD}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
