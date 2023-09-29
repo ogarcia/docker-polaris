@@ -1,4 +1,4 @@
-ALPINE_VERSION := 3.18.0
+ALPINE_VERSION := 3.18.4
 POLARIS_VERSION := 0.14.0
 CONTAINER_ORGANIZATION := ogarcia
 CONTAINER_IMAGE := polaris
@@ -15,7 +15,7 @@ ifdef CIRCLE_TAG
 	TAGS += -t ghcr.io/$(CONTAINER_ORGANIZATION)/$(CONTAINER_IMAGE):${CIRCLE_TAG}
 endif
 
-all: docker-build
+all: container-build
 
 check-dockerhub-env:
 ifndef DOCKERHUB_USERNAME
