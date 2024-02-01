@@ -20,6 +20,9 @@ tar xzf polaris.tar.gz
 # build polaris
 cd /polaris/src/polaris
 source $HOME/.cargo/env
+# Fix #199
+cargo update -p getrandom
+# End #199
 POLARIS_WEB_DIR="/usr/share/polaris/web" \
   POLARIS_SWAGGER_DIR="/usr/share/polaris/swagger" \
   POLARIS_DB_DIR="/var/lib/polaris" \
