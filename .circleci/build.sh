@@ -1,7 +1,7 @@
 #! /bin/sh
 #
 # build.sh
-# Copyright (C) 2018-2023 Óscar García Amor <ogarcia@connectical.com>
+# Copyright (C) 2018-2024 Óscar García Amor <ogarcia@connectical.com>
 #
 # Distributed under terms of the GNU GPLv3 license.
 #
@@ -20,9 +20,6 @@ tar xzf polaris.tar.gz
 # build polaris
 cd /polaris/src/polaris
 source $HOME/.cargo/env
-# Fix #199
-cargo update -p getrandom
-# End #199
 POLARIS_WEB_DIR="/usr/share/polaris/web" \
   POLARIS_SWAGGER_DIR="/usr/share/polaris/swagger" \
   POLARIS_DB_DIR="/var/lib/polaris" \

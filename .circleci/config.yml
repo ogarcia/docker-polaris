@@ -10,8 +10,7 @@ jobs:
     executor: docker-build-jammy
     steps:
       - checkout
-      - setup_remote_docker:
-          version: 20.10.18
+      - setup_remote_docker
       - run:
           name: Create a new builder instance
           command: docker buildx create --use
