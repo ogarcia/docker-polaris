@@ -1,33 +1,37 @@
-# Polaris container [![CircleCI](https://circleci.com/gh/ogarcia/docker-polaris.svg?style=svg)](https://circleci.com/gh/ogarcia/docker-polaris)
+# Polaris container
+
+[![forthebadge](https://forthebadge.com/images/badges/powered-by-flux-capacitor.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/compatibility-betamax.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/does-not-contain-treenuts.svg)](https://forthebadge.com)
 
 (c) 2018-2024 Óscar García Amor
 
 Redistribution, modifications and pull requests are welcomed under the terms
 of GPLv3 license.
 
-[Polaris][1] is a music streaming application, designed to let you enjoy
+[Polaris][po] is a music streaming application, designed to let you enjoy
 your music collection from any computer or mobile device.
 
-This container packages **Polaris** under [Alpine Linux][2], a lightweight
+This container packages **Polaris** under [Alpine Linux][al], a lightweight
 Linux distribution.
 
-Visit [Docker Hub][3], [Quay][4] or [GitHub][5] to see all available tags.
+Visit [Quay][qu] or [GitLab][gl] to see all available tags.
 
-[1]: https://github.com/agersant/polaris
-[2]: https://alpinelinux.org/
-[3]: https://hub.docker.com/r/ogarcia/polaris/
-[4]: https://quay.io/repository/ogarcia/polaris
-[5]: https://github.com/users/ogarcia/packages/container/package/polaris
+[po]: https://github.com/agersant/polaris
+[al]: https://alpinelinux.org/
+[qu]: https://quay.io/repository/connectical/polaris
+[gl]: https://gitlab.com/connectical/container/polaris/container_registry
 
 ## Run
 
 To run this container, simply exec.
 
 ```sh
+alias docker="podman" # If you are using podman
 docker run -t -d \
   --name=polaris \
   -p 5050:5050 \
-  ogarcia/polaris
+  registry.gitlab.com/connectical/container/polaris
 ```
 
 This start `polaris` and publish the port to host. You can go to
@@ -47,13 +51,14 @@ This container exports three volumes.
 You can exec the following to mount your music dir, store cache and data.
 
 ```sh
+alias docker="podman" # If you are using podman
 docker run -t -d \
   --name=polaris \
   -p 5050:5050 \
   -v /my/music/directory:/music \
   -v /my/polaris/cache:/var/cache/polaris \
   -v /my/polaris/data:/var/lib/polaris \
-  ogarcia/polaris
+  registry.gitlab.com/connectical/container/polaris
 ```
 
 Take note that you must create before the cache directory
@@ -94,13 +99,14 @@ image as base of your own modified one and you want run anything else.
 If you want to run a shell instead `run-polaris` command, simply do.
 
 ```sh
+alias docker="podman" # If you are using podman
 docker run -t -i --rm \
   --name=polaris \
   -p 5050:5050 \
   -v /my/music/directory:/music \
   -v /my/polaris/data:/var/lib/polaris \
   --entrypoint=/bin/sh \
-  ogarcia/polaris
+  registry.gitlab.com/connectical/container/polaris
 ```
 
 Please note that the `--rm` modifier destroy the container after shell exit.

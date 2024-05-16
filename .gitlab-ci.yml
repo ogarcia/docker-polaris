@@ -1,0 +1,47 @@
+variables:
+  QUAY_REGISTRY_IMAGE: quay.io/connectical/polaris
+
+stages:
+  - Container
+
+Build and push container image:
+  stage: Container
+  image: docker
+  services:
+    - docker:dind
+  script:
+    - docker context create builder
+    - docker buildx create builder --use
+    - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
+    - docker login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
+    - source .env
+    - |
+      docker build --push \
+        --build-arg ALPINE_VERSION=${ALPINE_VERSION} \
+        --build-arg POLARIS_VERSION=${POLARIS_VERSION} \
+        --tag ${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME} \
+        --tag ${QUAY_REGISTRY_IMAGE}:${CI_COMMIT_REF_NAME} .
+  rules:
+    - if: $CI_COMMIT_TAG == null && $CI_COMMIT_REF_PROTECTED == "true"
+
+Build and push tagged container image:
+  stage: Container
+  image: docker
+  services:
+    - docker:dind
+  script:
+    - docker context create builder
+    - docker buildx create builder --use
+    - docker login -u gitlab-ci-token -p ${CI_JOB_TOKEN} ${CI_REGISTRY}
+    - docker login -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD} quay.io
+    - source .env
+    - |
+      docker build --push \
+        --build-arg ALPINE_VERSION=${ALPINE_VERSION} \
+        --build-arg POLARIS_VERSION=${POLARIS_VERSION} \
+        --tag ${CI_REGISTRY_IMAGE}:${CI_COMMIT_TAG} \
+        --tag ${CI_REGISTRY_IMAGE}:latest \
+        --tag ${QUAY_REGISTRY_IMAGE}:${CI_COMMIT_TAG} \
+        --tag ${QUAY_REGISTRY_IMAGE}:latest .
+  rules:
+    - if: $CI_COMMIT_TAG
