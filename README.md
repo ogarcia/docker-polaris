@@ -1,112 +1,79 @@
 # Polaris container
 
-[![forthebadge](https://forthebadge.com/images/badges/powered-by-flux-capacitor.svg)](https://forthebadge.com)
-[![forthebadge](https://forthebadge.com/images/badges/compatibility-betamax.svg)](https://forthebadge.com)
-[![forthebadge](https://forthebadge.com/images/badges/does-not-contain-treenuts.svg)](https://forthebadge.com)
+**This project is no longer maintained and will not receive further updates.**
 
 (c) 2018-2026 [Connectical] Óscar García Amor
 
-Redistribution, modifications and pull requests are welcomed under the terms
-of GPLv3 license.
+For years this repository packaged [Polaris][po] under [Alpine Linux][al]. It
+has been retired: no new images will be built, neither for new Polaris
+releases nor for new Alpine base images. The images already published on
+[Quay][qu] and [GitLab][gl] stay where they are, but they will not get any
+security fixes.
 
-[Polaris][po] is a music streaming application, designed to let you enjoy
-your music collection from any computer or mobile device.
-
-This container packages **Polaris** under [Alpine Linux][al], a lightweight
-Linux distribution.
-
-Visit [Quay][qu] or [GitLab][gl] to see all available tags.
+The last state of the repository, with the `Containerfile` and the full
+documentation, is kept in the [`archive`][ar] branch for anybody who wants to
+keep building it on their own.
 
 [po]: https://github.com/agersant/polaris
 [al]: https://alpinelinux.org/
 [qu]: https://quay.io/repository/connectical/polaris
 [gl]: https://gitlab.com/connectical/container/polaris/container_registry
+[ar]: https://gitlab.com/connectical/container/polaris/-/tree/archive
 
-## Run
+## Migrate to Tocata
 
-To run this container, simply exec.
+The recommended replacement is [Tocata][to], an [OpenSubsonic][os] compatible
+music server written in Rust. Its presentation page, with screenshots of the
+panel, is at [tocata.ogarcia.me][tw].
 
-```sh
-alias docker="podman" # If you are using podman
-docker run -t -d \
-  --name=polaris \
-  -p 5050:5050 \
-  registry.gitlab.com/connectical/container/polaris
-```
+What you get compared to Polaris:
 
-This start `polaris` and publish the port to host. You can go to
-http://localhost:5050 to see it running.
+- **Any OpenSubsonic player.** Tocata speaks the OpenSubsonic API, so you are
+  not tied to one web client and one mobile app: the whole ecosystem of
+  Subsonic and OpenSubsonic players, on desktop and mobile, works with it.
+- **One static binary.** The server and its administration panel ship in a
+  single binary, statically linked against musl. Nothing to install beside it,
+  no runtime and no web server in front of it. There is no need for a custom
+  container like this one: an official image is published by the project.
+- **Light.** It indexes a collection of almost twelve thousand songs and plays
+  them in around twenty megabytes of memory.
+- **Collections and access.** Several collections, each reachable by the
+  people you choose, managed from the panel. Your music is mounted read only:
+  Tocata never writes to it.
+- **Careful authentication.** Passwords stored as Argon2id hashes, panel
+  sessions that can be listed and closed one by one, and per-client API keys
+  (`apiKeyAuthentication` extension) that can be revoked individually.
+- **More from your files.** Timed lyrics (`songLyrics`), cover art read from
+  the files themselves, every tag a file carries, top songs by artist and play
+  counts across everybody who listens on the server.
 
-Warning: this is a basic run, all data will be destroyed after container
-stop and rm.
+[to]: https://github.com/ogarcia/tocata
+[os]: https://opensubsonic.netlify.app/
+[tw]: https://tocata.ogarcia.me/
 
-## Volumes
-
-This container exports three volumes.
-
-- /music: for store you music collection
-- /var/cache/polaris: polaris cache
-- /var/lib/polaris: polaris data like database
-
-You can exec the following to mount your music dir, store cache and data.
-
-```sh
-alias docker="podman" # If you are using podman
-docker run -t -d \
-  --name=polaris \
-  -p 5050:5050 \
-  -v /my/music/directory:/music \
-  -v /my/polaris/cache:/var/cache/polaris \
-  -v /my/polaris/data:/var/lib/polaris \
-  registry.gitlab.com/connectical/container/polaris
-```
-
-Take note that you must create before the cache directory
-`/my/polaris/cache` and data directory `/my/polaris/data` and set ownership
-to UID/GID 100 in both, otherwise the main proccess will crash.
-
-```sh
-mkdir -p /my/polaris/cache /my/polaris/data
-chown -R 100:100 /my/polaris/cache /my/polaris/data
-```
-
-**WARNING**: Breaking changes in 0.13.x. The database is stored by default
-in `/var/lib/polaris/db.sqlite`. You must move your database from
-`/my/polaris/data/.local/share/polaris` to `/my/polaris/data`. The cache
-files are stored now in `/var/cache/polaris`.
-
-## Environment variables
-
-The `run-polaris` command can use the following environment variables.
-
-| Variable | Used for | Default value |
-| --- | --- | --- |
-| POLARIS_PORT | Define listen port | 5050 |
-| POLARIS_CONFIG | Optional config file location | |
-| POLARIS_DB | Optional database file location | |
-| POLARIS_CACHE_DIR | Optional cache directory location | /var/cache/polaris |
-| POLARIS_PIDFILE | Optional pid file location (see note) | |
-| POLARIS_LOGFILE | Optional log file location (see note) | |
-| POLARIS_LOGLEVEL | Optional log level between 0 (off) and 3 (debug) | |
-| POLARIS_DAEMONIZE | Run polaris as daemon in container (see note) | false |
-
-Note: both `POLARIS_PIDFILE` and `POLARIS_LOGFILE` only apply if you set
-`POLARIS_DAEMONIZE` as `true`. This only have sense if you want use this
-image as base of your own modified one and you want run anything else.
-
-## Shell run
-
-If you want to run a shell instead `run-polaris` command, simply do.
+### Quick start
 
 ```sh
 alias docker="podman" # If you are using podman
-docker run -t -i --rm \
-  --name=polaris \
-  -p 5050:5050 \
-  -v /my/music/directory:/music \
-  -v /my/polaris/data:/var/lib/polaris \
-  --entrypoint=/bin/sh \
-  registry.gitlab.com/connectical/container/polaris
+docker run -d --name tocata \
+  -p 4224:4224 \
+  -v tocata-data:/data \
+  -v /my/music/directory:/media:ro \
+  ghcr.io/ogarcia/tocata:latest
 ```
 
-Please note that the `--rm` modifier destroy the container after shell exit.
+On the first run Tocata creates an `admin` account and writes its generated
+password to the log, once. The panel is then at http://localhost:4224/, where
+you add `/media` (or a directory inside it) as a collection and start the
+first scan. Point your player at the same address, using an API key or the
+player's plain (legacy) password authentication: token authentication is
+refused on purpose, since it cannot coexist with hashed passwords.
+
+Nothing is carried over from Polaris: Tocata builds its own catalogue from
+the music files, so the only thing you need to keep is the music directory.
+Your Polaris data and cache volumes can be removed once you have moved.
+
+Everything else, from prebuilt binaries to environment variables and
+authentication details, is in the [Tocata README][tr].
+
+[tr]: https://github.com/ogarcia/tocata#readme
